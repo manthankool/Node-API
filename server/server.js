@@ -1,5 +1,5 @@
 var {mongoose} = require('./db/mongoose');    //es6 object destructuring
-var {Todo}= require('./models/todo');
+var {Todo} = require('./models/todo');
 var {User}= require('./models/users');
 
 var express = require('express');
@@ -11,15 +11,18 @@ app.use(bodyParser.json());
 
 app.post('/todos',(req,res) => {
   var newTodo=new Todo({
-    text:req.body.text
+    text:req.body.text,
+
   });
 
   newTodo.save().then((doc) => {
-    res.send(doc);
+    res.status(200).send(doc);
   },(err) => {
-    res.send(err);
+    res.status(400).send(err);
   });                   //body is stored by bodyParser
 });
+
+
 
 app.listen(3000, () => {
   console.log('Started on PORT 3000');
@@ -36,3 +39,5 @@ app.listen(3000, () => {
 // },(err) => {
 //   console.log('Unable to save it to database');
 // });
+
+module.exports = {app};

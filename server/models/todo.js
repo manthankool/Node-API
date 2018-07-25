@@ -20,4 +20,6 @@ var Todo = mongoose.model('Todo',{
 });
 
 
-module.exports = {Todo};
+module.exports = {
+  Todo:Todo
+};     //exporting the model, it is an object and we are setting Todo property equal to the Todo variable
