@@ -1,13 +1,15 @@
 const expect = require('expect');
 const request = require('supertest');
 
-
+const{ObjectID} = require('mongodb');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
 const todos = [{
+  _id:new ObjectID(),
   text:'maanja bhadwai maanja gandwe'
 },{
+  _id: new ObjectID(),
   text:'jaja jaja sasur ji ka bhosda'
 }];
 
@@ -72,6 +74,36 @@ describe('GET Todos', () => {
       .expect((res) => {
         expect(res.body.todos.length).toBe(2);       //we are not providing a function as provided above as are not doing asynchronous activity
       })
+      .end(done);
+  });
+});
+
+
+describe('GET /todos/:id', () => {
+  it('should return the todo document', (done) => {
+    request(app)
+      .get(`/todos/${todos[0]._id.toHexString()}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(todos[0].text);
+      })
+      .end(done);
+  });
+
+  it('should return 404 if todo not found',(done) => {
+    var id = new ObjectID();
+    request(app)
+      .get(`/todos/${id.toHexString()}`)
+      .expect(404)
+      .end(done);
+
+  });
+
+  it('should return got non-object ids',(done) => {
+    var id ="5b58e05ad3df285748929552";      //it is a non-object id
+    request(app)
+      .get(`/todos/${id}`)
+      .expect(404)
       .end(done);
   });
 });
